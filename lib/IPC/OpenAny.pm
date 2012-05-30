@@ -11,6 +11,7 @@ use Data::Dumper;
 use Params::Util qw(_STRING _ARRAYLIKE _CODELIKE);
 
 use parent 'Exporter';
+our @EXPORT_OK = qw(openany);
 
 our $DEBUG = 0;
 
@@ -32,30 +33,30 @@ Accepts the following parameters:
 = cmd_spec
 
 This specifies the command or code to be executed.
-If it is a string, it will be passed to exec() which
+If it is a string, it will be passed to L<exec>() which
 will invoke it via the shell. If it is a coderef, that
 coderef will be executed in a sepearate process just
 like a system command. If it is an arrayref, the first
 element will be used as the system command to execute,
 and the remaining elements will be the arguments passed
-to it. (string|coderef|arrayref)
+to it. (I<string> | I<coderef> | I<arrayref>)
 
 = fds
 
 Set this to a hashref where the keys are file descriptor
 numbers in the child process and the values are either
-perl file handles or undef. (hashref)
+perl file handles or undef. (I<hashref>)
 
 = env
 
 Set this to a hashref where the keys are the names of environment
 variables and the values are the values you want set for those env
-vars when the process is executed. (hashref)
+vars when the process is executed. (I<hashref>)
 
 = pwd
 
 Set this to the path you want to be the working directory of the
-process that will be executed. (string)
+process that will be executed. (I<string>)
 
 =end :list
 
@@ -71,6 +72,15 @@ sub run {
   return $pid;
 }
 
+=func openany
+
+This exportable sub is just a thin wrapper around the L</run>
+method above. It takes the exact same parameters.
+
+=cut
+sub openany { __PACKAGE__->run(@_) }
+
+# fork a child process in which to run the command/sub
 sub __fork_cmd {
   my ($cmd_spec, $fds, $env, $pwd) = @_;
 
@@ -92,8 +102,10 @@ sub __fork_cmd {
   die "pid $PID should never have gotten here.";
 }
 
+# do all the file-descriptor magic that the user asked for...
 sub __setup_child_fds {
   my ($fds) = @_;
+
   # close all fds that are explicitly mapped to undef...
   for my $fd ( grep { ! defined $fds->{$_} } keys %$fds) {
     defined POSIX::close($fd) or die "Couldn't close descriptor [$fd] in pid [$PID]: $!\n";
@@ -130,6 +142,7 @@ sub __setup_child_fds {
 
 }
 
+# finally, exec the command or sub.
 sub __exec_cmd {
   my ($cmd_spec) = @_;
 
@@ -161,10 +174,10 @@ __END__
 
 =head1 DESCRIPTION
 
-<B>THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
-OR FEATURE REQUESTS</B>
+L<<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
+OR FEATURE REQUESTS>>
 
-In the spirit of IPC::Open2 and IPC::Open3, which give you 2 and 3 handles
+In the spirit of L<IPC::Open2> and L<IPC::Open3>, which give you 2 and 3 handles
 to a child process, IPC::OpenAny makes it easy to start a process with any
 file descriptors you want connected to whatever handles you want.
 
@@ -204,8 +217,12 @@ file descriptors you want connected to whatever handles you want.
   );
 
 =head1 SEE ALSO
+
 IPC::Open2
+
 IPC::Open3
+
 IPC::Run
+
 IPC::Cmd
 

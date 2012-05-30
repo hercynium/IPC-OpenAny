@@ -62,7 +62,7 @@ process that will be executed. (I<string>)
 
 =cut
 sub run {
-  my ($class, %opt) = @_;
+  my (undef, %opt) = @_;
   my $cmd_spec = delete $opt{cmd_spec} or die "cmd_spec parameter is required!\n";
   my $fds      = delete $opt{fds};
   my $env      = delete $opt{env};
@@ -174,7 +174,7 @@ __END__
 
 =head1 DESCRIPTION
 
-L<<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
+B<<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
 OR FEATURE REQUESTS>>
 
 In the spirit of L<IPC::Open2> and L<IPC::Open3>, which give you 2 and 3 handles
@@ -209,7 +209,7 @@ file descriptors you want connected to whatever handles you want.
 
   # OR use the exported sub
   open my $fd1_fh, '<', $0;
-  my $pid = openany(
+  my $pid2 = openany(
     cmd_spec => [qw(tr a-zA-Z n-za-mN-ZA-M)],
     fds => {
       0 => $fd1_fh,

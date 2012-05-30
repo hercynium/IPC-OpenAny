@@ -56,5 +56,7 @@ is scalar read_file($fd3_file), "foo3", "got foo3 in file on FD3";
 is $stdout, "foo1", "got foo1 on stdout";
 is $stderr, "foo2", "got foo2 on stderr";
 
+unlink $fd3_file;
+
 done_testing;
 __END__

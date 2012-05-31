@@ -38,7 +38,6 @@ my ($stdout, $stderr) = capture {
 };
 close $fd3_fh;
 
-diag "Testing if FDs can be remapped/swapped...";
 is $stderr, "foo1", "got foo1 on stderr";
 is $stdout, "foo2", "got foo2 on stdout";
 is scalar read_file($fd3_file), "foo3", "got foo3 in file on FD3";

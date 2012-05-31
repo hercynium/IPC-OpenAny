@@ -5,12 +5,13 @@ use autodie;
 use File::Slurp qw(read_file);
 use Data::Dumper;
 use Capture::Tiny qw(capture);
+use File::Temp qw(tmpnam);
 use Test::More;
 
 use lib 'lib';
 use IPC::OpenAny;
 
-my $fd3_file = 'fd3_out.txt';
+my $fd3_file = tmpnam;
 open my $fd3_fh, '>', $fd3_file;
 
 my $cmd_sub = sub {

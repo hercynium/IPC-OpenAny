@@ -68,7 +68,7 @@ sub run {
   my $env      = delete $opt{env};
   my $pwd      = delete $opt{pwd};
   my $pid      = __fork_cmd($cmd_spec, $fds, $env, $pwd);
-  wait if $opt{wait};
+  waitpid $pid, 0 if $opt{wait};
   return $pid;
 }
 

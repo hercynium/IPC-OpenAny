@@ -174,8 +174,8 @@ __END__
 
 =head1 DESCRIPTION
 
-B<<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
-OR FEATURE REQUESTS>>
+B<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
+OR FEATURE REQUESTS>
 
 In the spirit of L<IPC::Open2> and L<IPC::Open3>, which give you 2 and 3 handles
 to a child process, IPC::OpenAny makes it easy to start a process with any
@@ -223,4 +223,11 @@ file descriptors you want connected to whatever handles you want.
 * L<IPC::Open3>
 * L<IPC::Run>
 * L<IPC::Cmd>
+
+=head1 CAVEATS
+
+May not work on Win32, and I don't have a windows box with which to
+develop and test it. Patches welcome!
+
+As usual, please report any other issues you may encounter!
 

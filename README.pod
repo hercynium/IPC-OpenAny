@@ -1,0 +1,136 @@
+=pod
+
+=head1 NAME
+
+IPC::OpenAny - Run a process with control over any FDs it may use.
+
+=head1 VERSION
+
+version 0.005
+
+=head1 SYNOPSIS
+
+  use IPC::OpenAny qw(openany);
+
+  open my $fh, '>', 'fd3_out.txt';
+
+  my $cmd_sub = sub {
+    print STDOUT  "foo1\n";
+    print STDERR  "foo2\n";
+    my $fd3_fh = IO::Handle->new_from_fd(3, '>');
+    print $fd3_fh "foo3\n";
+  };
+
+  # call the class method
+  my $pid = IPC::OpenAny->run(
+    cmd_spec => $cmd_sub,
+    fds => {
+      0 => undef,    # close this
+      1 => \*STDERR, # foo1
+      2 => \*STDOUT, # foo2
+      3 => $fh,      # foo3
+    },
+    wait => 1,
+  );
+
+
+  # OR use the exported sub
+  open my $fd1_fh, '<', $0;
+  my $pid2 = openany(
+    cmd_spec => [qw(tr a-zA-Z n-za-mN-ZA-M)],
+    fds => {
+      0 => $fd1_fh,
+    },
+  );
+
+=head1 DESCRIPTION
+
+B<<THIS SOFTWARE IS STILL UNDER DEVELOPMENT PLEASE REPORT ANY BUGS, COMMENTS,
+OR FEATURE REQUESTS>>
+
+In the spirit of L<IPC::Open2> and L<IPC::Open3>, which give you 2 and 3 handles
+to a child process, IPC::OpenAny makes it easy to start a process with any
+file descriptors you want connected to whatever handles you want.
+
+=head1 METHODS
+
+=head2 run
+
+Runs the given command or code-ref in a separate process, with its
+file descriptors mapped to handles or closed (or just left alone)
+however the user may choose.
+
+Accepts the following parameters:
+
+=over 4
+
+=item cmd_spec
+
+This specifies the command or code to be executed.
+If it is a string, it will be passed to L<exec>() which
+will invoke it via the shell. If it is a coderef, that
+coderef will be executed in a sepearate process just
+like a system command. If it is an arrayref, the first
+element will be used as the system command to execute,
+and the remaining elements will be the arguments passed
+to it. (I<string> | I<coderef> | I<arrayref>)
+
+=item fds
+
+Set this to a hashref where the keys are file descriptor
+numbers in the child process and the values are either
+perl file handles or undef. (I<hashref>)
+
+=item env
+
+Set this to a hashref where the keys are the names of environment
+variables and the values are the values you want set for those env
+vars when the process is executed. (I<hashref>)
+
+=item pwd
+
+Set this to the path you want to be the working directory of the
+process that will be executed. (I<string>)
+
+=back
+
+=head1 FUNCTIONS
+
+=head2 openany
+
+This exportable sub is just a thin wrapper around the L</run>
+method above. It takes the exact same parameters.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<IPC::Open2>
+
+=item *
+
+L<IPC::Open3>
+
+=item *
+
+L<IPC::Run>
+
+=item *
+
+L<IPC::Cmd>
+
+=back
+
+=head1 AUTHOR
+
+Stephen R. Scaffidi <sscaffidi@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Stephen R. Scaffidi.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+

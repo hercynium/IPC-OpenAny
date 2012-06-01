@@ -218,11 +218,9 @@ file descriptors you want connected to whatever handles you want.
 
 =head1 SEE ALSO
 
-IPC::Open2
-
-IPC::Open3
-
-IPC::Run
-
-IPC::Cmd
+=for :list
+* L<IPC::Open2>
+* L<IPC::Open3>
+* L<IPC::Run>
+* L<IPC::Cmd>
 
